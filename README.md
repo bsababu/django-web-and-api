@@ -29,7 +29,7 @@ This project is a Django project that was created using the Cookiecutter Django 
 
 - clone the project:
 
-      git clone https://github.com/your_username/your_project_name.git
+      git clone https://github.com/bsababu/django-web-and-api.git
 
 - change the directory to the project:
 
