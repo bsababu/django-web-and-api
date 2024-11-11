@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- NVD3 CSS -->
+    <link href="{% static 'css/nv.d3.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Custom CSS (optional) -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #chart-container {
+            text-align: center;
+            height: 500px; /* Set a height for the container */
+        }
+        #chart {
+            height: 60%; /* Make the chart fill the container */
+        }
+        #chart svg {
+            height: 50%;
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <p>Below is a sample chart generated using D3.js and NVD3.</p>
+    <!-- Chart Container -->
+    <div id="chart-container">
+        <!-- <div id="chart"></div> -->
+        <svg id="chart"></svg>
+    </div>
+    <!-- D3.js and NVD3 Scripts -->
+    <script src="{% static 'js/d3.min.js' %}"></script>
+    <script src="{% static 'js/nv.d3.min.js' %}"></script>
+    <!-- Chart Initialization Script -->
+    <script>
+
+        nv.addGraph(function() {
+        const chartt = nv.models.pieChart()
+            .x(function(d) { return d.key; })
+            .y(function(d) { return d.value; })
+            .showLabels(true)
+            .labelThreshold(0.05)
+            .labelType("percent")
+            .donut(true)
+            .donutRatio(0.35);
+
+        d3.json("{% url 'chart-data' %}") // http://127.0.0.1:8000/charts/api/chart/
+            .then(function(data) {
+                console.log("Data debugging");
+                if (!data || data.length === 0) {
+                    console.error("Data is undefined or empty");
+                    return;
+                }
+                d3.select("#chart svg")
+                    .datum(data)
+                    .call(chartt);
+
+                nv.utils.windowResize(chartt.update);
+                
+            })
+            .catch(function(error) {
+                console.error("Error fetching data:", error);
+            });
+            
+        return chartt;
+    });
+    </script>
+</body>
+</html>
